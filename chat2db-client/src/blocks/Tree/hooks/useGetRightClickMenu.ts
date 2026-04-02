@@ -21,6 +21,12 @@ import { handelPinTable } from '../functions/pinTable';
 import { viewDDL } from '../functions/viewDDL';
 import { deleteTable } from '../functions/deleteTable';
 import { deleteSequence } from '../functions/deleteSequence';
+import { syncTable } from '../functions/syncTable';
+
+// ---- components -----
+import DatabaseStructureImportExport from '@/blocks/DatabaseStructureImportExport';
+import DataMigration from '@/blocks/DataMigration';
+import { Modal } from 'antd';
 
 // ----- utils -----
 import { compatibleDataBaseName } from '@/utils/database';
@@ -228,6 +234,61 @@ export const useGetRightClickMenu = (props: IProps) => {
                 })
               },
             },
+          });
+        },
+      },
+
+      // 同步表结构
+      [OperationColumn.SyncTable]: {
+        text: 'Sync Table Structure',
+        icon: '\ue62f',
+        handle: () => {
+          syncTable(treeNodeData);
+        },
+      },
+
+      // 数据库结构导入/导出
+      [OperationColumn.DatabaseStructure]: {
+        text: 'Database Structure Import/Export',
+        icon: '\ue669',
+        handle: () => {
+          Modal.open({
+            title: 'Database Structure Import/Export',
+            width: '900px',
+            footer: false,
+            content: (
+              <DatabaseStructureImportExport
+                visible={true}
+                onClose={() => Modal.destroyAll()}
+                onSuccess={() => {
+                  // 导入成功后的回调
+                  console.log('Database structure import/export successful');
+                }}
+              />
+            ),
+          });
+        },
+      },
+
+      // 数据迁移
+      [OperationColumn.DataMigration]: {
+        text: 'Data Migration',
+        icon: '\ue62f',
+        handle: () => {
+          Modal.open({
+            title: 'Data Migration',
+            width: '800px',
+            footer: false,
+            content: (
+              <DataMigration
+                visible={true}
+                onClose={() => Modal.destroyAll()}
+                onSuccess={() => {
+                  // 迁移成功后的回调
+                  console.log('Data migration successful');
+                }}
+              />
+            ),
           });
         },
       },
