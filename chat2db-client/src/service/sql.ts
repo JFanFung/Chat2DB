@@ -150,6 +150,46 @@ export interface IExportParams extends IExecuteSqlParams {
   exportType: ExportTypeEnum;
   exportSize: ExportSizeEnum;
 }
+
+export interface IDatabaseExportParams {
+  dataSourceId: number;
+  databaseName: string;
+  schemaName?: string | null;
+  includeTables?: string[];
+  includeViews?: boolean;
+  includeFunctions?: boolean;
+  includeProcedures?: boolean;
+  includeTriggers?: boolean;
+  includeSequences?: boolean;
+}
+
+export interface IDatabaseImportParams {
+  dataSourceId: number;
+  databaseName: string;
+  schemaName?: string | null;
+  sql: string;
+  overwrite?: boolean;
+}
+
+export interface IMigrationParams {
+  sourceDataSourceId: number;
+  sourceDatabaseName: string;
+  sourceSchemaName?: string | null;
+  sourceTableName: string;
+  targetDataSourceId: number;
+  targetDatabaseName: string;
+  targetSchemaName?: string | null;
+  targetTableName: string;
+  includeData: boolean;
+  overwrite: boolean;
+}
+
+export interface IMigrationResponse {
+  success: boolean;
+  message: string;
+  migratedRows?: number;
+  duration?: number;
+}
 /**
  * 导出-表格
  */
@@ -295,6 +335,25 @@ export interface IModifySequenceSqlParams {
   newSequence: ISequenceInfo;
   refresh: boolean;
 }
+
+export interface ISyncTableParams {
+  sourceDataSourceId: number;
+  sourceDatabaseName: string;
+  sourceSchemaName?: string | null;
+  sourceTableName: string;
+  targetDataSourceId: number;
+  targetDatabaseName: string;
+  targetSchemaName?: string | null;
+  targetTableName?: string;
+  syncType: 'CREATE' | 'UPDATE' | 'OVERWRITE';
+  refresh: boolean;
+}
+
+export interface ISyncTableResponse {
+  success: boolean;
+  message: string;
+  sql?: string;
+}
 /** 获取序列的详情 */
 const getSequenceDetails = createRequest<
   {
@@ -348,6 +407,29 @@ const getDatabaseUserNameList = createRequest<{
   schemaName?: string | null;
   refresh: boolean;
 },{sql:[]}>('/api/rdb/database/database_username_list', { method: 'get' });
+
+/** 同步表结构 */
+const syncTableStructure = createRequest<ISyncTableParams, ISyncTableResponse>('/api/rdb/table/sync', { 
+  method: 'post',
+  delayTime: 1000 
+});
+
+/** 导出数据库结构 */
+const exportDatabaseStructure = createRequest<IDatabaseExportParams, string>('/api/rdb/ddl/export_database', { 
+  method: 'post',
+  responseType: 'text'
+});
+
+/** 导入数据库结构 */
+const importDatabaseStructure = createRequest<IDatabaseImportParams, { success: boolean; message: string }>('/api/rdb/ddl/import_database', { 
+  method: 'post'
+});
+
+/** 数据迁移 */
+const migrateTable = createRequest<IMigrationParams, IMigrationResponse>('/api/rdb/table/migrate', { 
+  method: 'post',
+  delayTime: 1000 
+});
 export default {
   getCreateSchemaSql,
   getCreateDatabaseSql,
@@ -393,4 +475,8 @@ export default {
   getSequenceDetails,
   deleteSequence,
   getDatabaseUserNameList,
+  syncTableStructure,
+  exportDatabaseStructure,
+  importDatabaseStructure,
+  migrateTable,
 };

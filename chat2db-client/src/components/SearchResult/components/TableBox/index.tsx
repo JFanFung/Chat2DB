@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Dropdown, Input, MenuProps, message, Modal, Space, Popover, Spin, Button } from 'antd';
+import { Dropdown, Input, MenuProps, message, Modal, Space, Popover, Spin, Button, Upload } from 'antd';
 import { BaseTable, ArtColumn, useTablePipeline, features, SortItem } from 'ali-react-table';
 import styled from 'styled-components';
 import classnames from 'classnames';
@@ -158,6 +158,41 @@ export default function TableBox(props: ITableProps) {
       exportSize,
     };
     downloadFile(window._BaseURL + '/api/rdb/dml/export', params);
+  };
+
+  const handleImportSQLResult = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('dataSourceId', props.executeSqlParams?.dataSourceId?.toString() || '');
+    formData.append('databaseName', props.executeSqlParams?.databaseName || '');
+    formData.append('schemaName', props.executeSqlParams?.schemaName || '');
+    formData.append('tableName', queryResultData.tableName || '');
+    formData.append('databaseType', props.executeSqlParams?.databaseType || '');
+
+    try {
+      setTableLoading(true);
+      const response = await fetch(window._BaseURL + '/api/rdb/dml/import', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          message.success('Data imported successfully');
+          getTableData();
+        } else {
+          message.error(`Import failed: ${result.message}`);
+        }
+      } else {
+        message.error('Import failed: Network error');
+      }
+    } catch (error) {
+      console.error('Import error:', error);
+      message.error('Import failed: Unexpected error');
+    } finally {
+      setTableLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -1043,6 +1078,19 @@ export default function TableBox(props: ITableProps) {
               </div>
             )}
             <div className={styles.toolBarRight}>
+              <Upload
+                accept=".csv,.xlsx,.json"
+                beforeUpload={(file) => {
+                  handleImportSQLResult(file);
+                  return false;
+                }}
+                maxCount={1}
+              >
+                <Button className={styles.importBar}>
+                  <UploadOutlined />
+                  {i18n('common.text.import')}
+                </Button>
+              </Upload>
               <Dropdown menu={{ items: exportDropdownItems }} trigger={['click']}>
                 <Space className={styles.exportBar}>
                   {i18n('common.text.export')}

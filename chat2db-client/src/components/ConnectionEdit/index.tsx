@@ -7,7 +7,7 @@ import { ConnectionEnvType, databaseMap } from '@/constants';
 import { dataSourceFormConfigs } from './config/dataSource';
 import { IConnectionConfig, IFormItem, ISelect } from './config/types';
 import { InputType } from './config/enum';
-import { IConnectionDetails } from '@/typings';
+import { IConnectionDetails, IConnectionGroup } from '@/typings';
 import { deepClone } from '@/utils';
 import { Select, Form, Input, message, Table, Button, Collapse } from 'antd';
 import Iconfont from '@/components/Iconfont';
@@ -56,6 +56,7 @@ const ConnectionEdit = forwardRef((props: IProps, ref: ForwardedRef<ICreateConne
   });
 
   const [envList, setEnvList] = useState<{ value: number; label: string }[]>([]);
+  const [groupList, setGroupList] = useState<{ value: number; label: string }[]>([]);
 
   useEffect(() => {
     const _envList = connectionEnvList?.map((t) => {
@@ -71,6 +72,21 @@ const ConnectionEdit = forwardRef((props: IProps, ref: ForwardedRef<ICreateConne
     }
   }, [connectionEnvList]);
 
+  useEffect(() => {
+    // 获取分组列表
+    connectionService.getGroupList().then((groups) => {
+      const _groupList = groups.map((group: IConnectionGroup) => {
+        return {
+          value: group.id,
+          label: group.name,
+        };
+      });
+      setGroupList(_groupList);
+    }).catch((error) => {
+      console.error('Failed to get group list:', error);
+    });
+  }, []);
+
   const dataSourceFormConfigPropsMemo = useMemo<IConnectionConfig>(() => {
     const deepCloneDataSourceFormConfigs = deepClone(dataSourceFormConfigs);
     const data = deepCloneDataSourceFormConfigs.find((t: IConnectionConfig) => {
@@ -82,8 +98,29 @@ const ConnectionEdit = forwardRef((props: IProps, ref: ForwardedRef<ICreateConne
         t.defaultValue = envList[0].value;
       }
     });
+    
+    // 添加分组选择字段
+    const groupSelectItem: IFormItem = {
+      name: 'groupId',
+      labelNameCN: '分组',
+      labelNameEN: 'Group',
+      placeholder: '请选择分组',
+      placeholderEN: 'Please select group',
+      inputType: InputType.SELECT,
+      selects: groupList,
+      defaultValue: backfillData.groupId || undefined,
+      styles: {
+        width: '100%',
+        labelWidthCN: '70px',
+        labelWidthEN: '100px',
+      },
+    };
+    
+    // 将分组选择字段添加到基础信息表单的末尾
+    data.baseInfo.items.push(groupSelectItem);
+    
     return data;
-  }, [backfillData, envList]);
+  }, [backfillData, envList, groupList]);
 
   useEffect(() => {
     setBackfillData(props.connectionData);

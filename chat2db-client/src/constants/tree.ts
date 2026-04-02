@@ -50,5 +50,8 @@ export enum OperationColumn {
   OpenSequence = 'openSequence', // 打开序列
   CreateSequence = 'createSequence', // 新建序列
   EditSequence = 'editSequence', /// 编辑序列
-  DeleteSequence = 'deleteSequence' // 删除序列
+  DeleteSequence = 'deleteSequence', // 删除序列
+  SyncTable = 'syncTable', // 同步表结构
+  DatabaseStructure = 'databaseStructure', // 数据库结构导入/导出
+  DataMigration = 'dataMigration' // 数据迁移
 }
