@@ -42,39 +42,38 @@ const ChatInput = (props: IProps) => {
   };
 
   const renderSelectTable = () => {
-    const { tables, onSelectTableSyncModel, selectedTables, onSelectTables } = props;
+    const { tables, onSelectTableSyncModel, selectedTables, onSelectTables, syncTableModel } = props;
     const options = (tables || []).map((t) => ({ value: t, label: t }));
     return (
       <div className={styles.aiSelectedTable}>
         <Radio.Group
           onChange={(v) => onSelectTableSyncModel(v.target.value)}
-          // value={syncTableModel}
-          value={SyncModelType.MANUAL}
+          value={syncTableModel}
           style={{ marginBottom: '8px' }}
         >
           <Space direction="horizontal">
-            {/* <Radio value={SyncModelType.AUTO}>自动</Radio> */}
+            <Radio value={SyncModelType.AUTO}>自动</Radio>
             <Radio value={SyncModelType.MANUAL}>手动</Radio>
           </Space>
         </Radio.Group>
-        {/* {syncTableModel === 0 ? (
-          i18n('chat.input.syncTable.tips')
+        {syncTableModel === SyncModelType.AUTO ? (
+          <span className={styles.aiSelectedTableTips}>{i18n('chat.input.syncTable.tips')}</span>
         ) : (
-        )} */}
-        <>
-          <span className={styles.aiSelectedTableTips}>{i18n('chat.input.remain.tooltip')}</span>
-          <Select
-            showSearch
-            mode="multiple"
-            allowClear
-            options={options}
-            placeholder={i18n('chat.input.tableSelect.placeholder')}
-            value={selectedTables}
-            onChange={(v) => {
-              onSelectTables && onSelectTables(v);
-            }}
-          />
-        </>
+          <>
+            <span className={styles.aiSelectedTableTips}>{i18n('chat.input.remain.tooltip')}</span>
+            <Select
+              showSearch
+              mode="multiple"
+              allowClear
+              options={options}
+              placeholder={i18n('chat.input.tableSelect.placeholder')}
+              value={selectedTables}
+              onChange={(v) => {
+                onSelectTables && onSelectTables(v);
+              }}
+            />
+          </>
+        )}
       </div>
     );
   };
