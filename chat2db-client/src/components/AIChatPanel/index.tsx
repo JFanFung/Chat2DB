@@ -185,6 +185,24 @@ const AIChatPanel = forwardRef<IAIChatPanelRef, IProps>((props, ref) => {
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
 
+    // 检查window._BaseURL是否存在
+    if (!window._BaseURL) {
+      const aiMessage: IChatMessage = {
+        id: uuidv4(),
+        type: MessageType.ERROR,
+        content: '服务器地址未配置，请检查设置',
+        timestamp: Date.now(),
+      };
+      setMessages(prev => [...prev, {
+        id: uuidv4(),
+        type: MessageType.USER,
+        content: inputValue.trim(),
+        timestamp: Date.now(),
+      }, aiMessage]);
+      setInputValue('');
+      return;
+    }
+
     const userMessage: IChatMessage = {
       id: uuidv4(),
       type: MessageType.USER,

@@ -13,6 +13,11 @@ const connectToEventSource = (params: {
     throw new Error('url, onMessage, and onError are required');
   }
 
+  // 检查window._BaseURL是否存在
+  if (!window._BaseURL) {
+    throw new Error('Server address not configured. Please check settings.');
+  }
+
   const DBHUB = localStorage.getItem('DBHUB');
   const p = {
     headers: {
