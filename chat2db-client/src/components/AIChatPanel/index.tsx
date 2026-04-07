@@ -185,12 +185,11 @@ const AIChatPanel = forwardRef<IAIChatPanelRef, IProps>((props, ref) => {
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
 
-    // 检查window._BaseURL是否存在
     if (!window._BaseURL) {
       const aiMessage: IChatMessage = {
         id: uuidv4(),
         type: MessageType.ERROR,
-        content: '服务器地址未配置，请检查设置',
+        content: i18n('aiChat.serverNotConfigured'),
         timestamp: Date.now(),
       };
       setMessages(prev => [...prev, {
@@ -229,7 +228,7 @@ const AIChatPanel = forwardRef<IAIChatPanelRef, IProps>((props, ref) => {
     if (!apiKey && isChat2DBAI) {
       handleApiKeyEmptyOrGetQrCode(true);
       setIsLoading(false);
-      updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: '请先登录获取API Key' });
+      updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: i18n('aiChat.pleaseLogin') });
       return;
     }
 
@@ -269,6 +268,25 @@ const AIChatPanel = forwardRef<IAIChatPanelRef, IProps>((props, ref) => {
           return;
         }
 
+        if (_message.includes('[ERROR]')) {
+          closeEventSource.current?.();
+          setIsStream(false);
+          setIsLoading(false);
+          const errorMatch = _message.match(/"content":"([^"]+)"/);
+          const errorMessage = errorMatch ? errorMatch[1] : i18n('aiChat.requestFailed');
+          
+          if (errorMessage.includes('Rest AI Error')) {
+            updateMessage(aiMessage.id, { 
+              isLoading: false, 
+              type: MessageType.ERROR, 
+              content: i18n('aiChat.restAIError') 
+            });
+          } else {
+            updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: errorMessage });
+          }
+          return;
+        }
+
         let hasErrorToLogin = false;
         chatErrorToLogin.forEach((err) => {
           if (_message.includes(err)) {
@@ -286,7 +304,7 @@ const AIChatPanel = forwardRef<IAIChatPanelRef, IProps>((props, ref) => {
           closeEventSource.current?.();
           setIsLoading(false);
           handlePopUp();
-          updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: 'Key次数用完或者过期' });
+          updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: i18n('aiChat.keyExpired') });
           return;
         }
 
@@ -295,7 +313,7 @@ const AIChatPanel = forwardRef<IAIChatPanelRef, IProps>((props, ref) => {
           setIsLoading(false);
           handleApiKeyEmptyOrGetQrCode(true);
           fetchRemainingUse(apiKey);
-          updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: '请先登录' });
+          updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: i18n('aiChat.pleaseLogin') });
           return;
         }
 
@@ -305,7 +323,7 @@ const AIChatPanel = forwardRef<IAIChatPanelRef, IProps>((props, ref) => {
         setIsLoading(false);
         setIsStream(false);
         closeEventSource.current?.();
-        updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: '解析响应失败' });
+        updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: i18n('aiChat.parseError') });
       }
     };
 
@@ -314,7 +332,7 @@ const AIChatPanel = forwardRef<IAIChatPanelRef, IProps>((props, ref) => {
       setIsLoading(false);
       setIsStream(false);
       closeEventSource.current?.();
-      updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: error.message || '请求失败' });
+      updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: error.message || i18n('aiChat.requestFailed') });
     };
 
     closeEventSource.current = connectToEventSource({

@@ -23,4 +23,10 @@ export default {
   'aiChat.manualSelect': 'Manual',
   'aiChat.selectConnection': 'Please select a data source connection first',
   'aiChat.sqlApplied': 'SQL applied to editor',
+  'aiChat.serverNotConfigured': 'Server address not configured, please check settings',
+  'aiChat.pleaseLogin': 'Please login to get API Key',
+  'aiChat.keyExpired': 'Key limit reached or expired',
+  'aiChat.requestFailed': 'Request failed',
+  'aiChat.parseError': 'Failed to parse response',
+  'aiChat.restAIError': 'Custom AI service configuration error, please check AI settings (URL, API Key, etc.)',
 };

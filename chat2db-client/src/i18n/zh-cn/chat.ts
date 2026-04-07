@@ -22,4 +22,10 @@ export default {
   'aiChat.manualSelect': '手动选表',
   'aiChat.selectConnection': '请先选择一个数据源连接',
   'aiChat.sqlApplied': 'SQL已应用到编辑器',
+  'aiChat.serverNotConfigured': '服务器地址未配置，请检查设置',
+  'aiChat.pleaseLogin': '请先登录获取API Key',
+  'aiChat.keyExpired': 'Key次数用完或者过期',
+  'aiChat.requestFailed': '请求失败',
+  'aiChat.parseError': '解析响应失败',
+  'aiChat.restAIError': '自定义AI服务配置错误，请检查设置中的AI配置（URL、API Key等）',
 };
