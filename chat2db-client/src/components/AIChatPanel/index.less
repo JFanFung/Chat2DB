@@ -1,0 +1,358 @@
+@import '@/styles/var.less';
+
+.aiChatPanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--color-bg-base);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .headerActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.tableSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+
+  :global {
+    .ant-radio-group {
+      font-size: 12px;
+    }
+  }
+}
+
+.tableSelect {
+  min-width: 120px;
+  max-width: 200px;
+}
+
+.messagesContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-text-secondary);
+  text-align: center;
+
+  p {
+    margin: 8px 0 0;
+    font-size: 14px;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+  }
+}
+
+.messageItem {
+  display: flex;
+  gap: 12px;
+  max-width: 100%;
+}
+
+.userMessage {
+  flex-direction: row-reverse;
+
+  .messageContent {
+    align-items: flex-end;
+  }
+
+  .userText {
+    background-color: var(--color-primary);
+    color: #fff;
+    border-radius: 12px 12px 4px 12px;
+  }
+}
+
+.aiMessage {
+  .messageContent {
+    align-items: flex-start;
+  }
+}
+
+.messageAvatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-secondary);
+}
+
+.messageContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: calc(100% - 48px);
+}
+
+.userText {
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-word;
+  background-color: var(--color-bg-secondary);
+  border-radius: 12px 12px 12px 4px;
+}
+
+.loadingDots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: var(--color-bg-secondary);
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.errorText {
+  padding: 8px 12px;
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.sqlBlock {
+  background-color: var(--color-bg-secondary);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.sqlHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--color-bg-tertiary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sqlLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.sqlActions {
+  display: flex;
+  gap: 4px;
+}
+
+.sqlCode {
+  margin: 0;
+  padding: 12px;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--color-text);
+}
+
+.executeResult {
+  background-color: var(--color-bg-secondary);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.executingStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.successResult {
+  padding: 12px;
+}
+
+.resultHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.successIcon {
+  color: var(--color-success);
+}
+
+.errorIcon {
+  color: var(--color-error);
+}
+
+.duration {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  font-weight: normal;
+}
+
+.dataPreview {
+  margin-top: 8px;
+}
+
+.dataTable {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  th {
+    background-color: var(--color-bg-tertiary);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+
+  td {
+    color: var(--color-text);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.moreData {
+  padding: 8px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  background-color: var(--color-bg-tertiary);
+}
+
+.updateCount {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.errorResult {
+  padding: 12px;
+
+  .errorMessage {
+    margin: 8px 0;
+    padding: 8px 12px;
+    background-color: var(--color-error-bg);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--color-error);
+    word-break: break-word;
+  }
+}
+
+.inputContainer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  transition: border-color 0.2s;
+
+  &:focus-within {
+    border-color: var(--color-primary);
+  }
+}
+
+.input {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--color-text);
+  outline: none;
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.sendButton {
+  padding: 8px;
+  color: var(--color-text-secondary);
+  transition: color 0.2s;
+
+  &:hover:not(:disabled) {
+    color: var(--color-primary);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
