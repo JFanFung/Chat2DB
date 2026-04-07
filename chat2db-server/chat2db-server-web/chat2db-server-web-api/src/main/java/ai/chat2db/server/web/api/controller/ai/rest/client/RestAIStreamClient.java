@@ -154,14 +154,27 @@ public class RestAIStreamClient {
         log.info("Rest AI, prompt:{}", chatMessages.get(chatMessages.size() - 1).getContent());
         try {
 
-            FastChatCompletionsOptions chatCompletionsOptions = new FastChatCompletionsOptions(chatMessages);
-            chatCompletionsOptions.setStream(true);
-            chatCompletionsOptions.setModel(this.model);
+            // 构建请求体，支持小米MIMO模型
+            Object requestBodyObject;
+            if (this.model != null && this.model.toLowerCase().contains("mimo")) {
+                // 小米MIMO模型的请求格式
+                MimoCompletionsOptions mimoOptions = new MimoCompletionsOptions(chatMessages);
+                mimoOptions.setStream(true);
+                mimoOptions.setModel(this.model);
+                requestBodyObject = mimoOptions;
+            } else {
+                // 标准FastChat格式
+                FastChatCompletionsOptions chatCompletionsOptions = new FastChatCompletionsOptions(chatMessages);
+                chatCompletionsOptions.setStream(true);
+                chatCompletionsOptions.setModel(this.model);
+                requestBodyObject = chatCompletionsOptions;
+            }
 
             EventSource.Factory factory = EventSources.createFactory(this.okHttpClient);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            String requestBody = mapper.writeValueAsString(chatCompletionsOptions);
+            String requestBody = mapper.writeValueAsString(requestBodyObject);
+            log.info("Rest AI request body: {}", requestBody);
             Request request = new Request.Builder()
                     .url(apiHost)
                     .post(RequestBody.create(MediaType.parse(ContentType.JSON.getValue()), requestBody))
@@ -173,6 +186,20 @@ public class RestAIStreamClient {
             log.error("rest ai error", e);
             eventSourceListener.onFailure(null, e, null);
             throw new ParamBusinessException();
+        }
+    }
+    
+    /**
+     * 小米MIMO模型的请求格式
+     */
+    @Data
+    private static class MimoCompletionsOptions {
+        private List<FastChatMessage> messages;
+        private Boolean stream;
+        private String model;
+        
+        public MimoCompletionsOptions(List<FastChatMessage> messages) {
+            this.messages = messages;
         }
     }
 

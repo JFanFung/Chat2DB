@@ -276,10 +276,12 @@ const AIChatPanel = forwardRef<IAIChatPanelRef, IProps>((props, ref) => {
           const errorMessage = errorMatch ? errorMatch[1] : i18n('aiChat.requestFailed');
           
           if (errorMessage.includes('Rest AI Error')) {
+            // 提取详细错误信息
+            const detailedError = errorMessage.replace('Rest AI Error', '');
             updateMessage(aiMessage.id, { 
               isLoading: false, 
               type: MessageType.ERROR, 
-              content: i18n('aiChat.restAIError') 
+              content: i18n('aiChat.restAIError') + (detailedError ? `: ${detailedError}` : '') 
             });
           } else {
             updateMessage(aiMessage.id, { isLoading: false, type: MessageType.ERROR, content: errorMessage });
